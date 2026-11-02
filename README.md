@@ -1,226 +1,272 @@
-AutoEDA — Automated Exploratory Data Analysis Platform
+# AutoEDA
 
-AutoEDA is a full-stack web application that lets you upload any tabular dataset (CSV or Excel) and instantly get a complete, professional Exploratory Data Analysis (EDA) report — summary statistics, missing-value analysis, correlations, distributions, outlier detection, feature importance, and AI-generated insights — without writing a single line of code.
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)
 
-It combines a React + TypeScript frontend with a Python FastAPI backend for heavier statistical computation, chart generation, and AI-powered narrative insights, while also supporting a lightweight client-side analysis mode when the backend isn't available.
+**Upload a CSV or Excel file and get a complete exploratory data analysis report in seconds, with no code.**
 
+AutoEDA is a full-stack web app that turns a raw tabular dataset into a clean, interactive dashboard: summary statistics, missing-value analysis, correlations, distributions, outliers, feature importance, and plain-English insights written by AI. You can clean the data right in the dashboard and export a PDF report when you're done.
 
-Table of Contents
+It pairs a React + TypeScript frontend with a Python FastAPI backend that handles the heavy statistics, chart generation, and AI insights. If the backend isn't running, the frontend falls back to a lightweight in-browser analysis mode, so the app still works.
 
+---
 
-Features
-Tech Stack
-Architecture
-Project Structure
-Getting Started
+## Technologies
 
-Prerequisites
-Frontend Setup
-Backend Setup
+**Frontend**
+- React 18, TypeScript, Vite
+- React Router v6
+- shadcn/ui + Radix UI (accessible components), Tailwind CSS
+- Recharts + Chart.js (charts), Framer Motion (animations)
+- TanStack React Query + Axios (data fetching)
+- PapaParse (CSV) and SheetJS (Excel) for client-side parsing
+- jsPDF + jspdf-autotable for client-side PDF export
 
+**Backend**
+- Python 3.10+, FastAPI
+- Pandas, NumPy (data processing)
+- Matplotlib, Seaborn (chart images)
+- scikit-learn (feature importance)
+- ReportLab (PDF reports)
+- OpenAI API (AI-generated insights)
 
+**Testing**
+- Frontend: Vitest, Testing Library, Playwright
+- Backend: Pytest, httpx
 
-Environment Variables
-API Reference
-Available Scripts
-Testing
-Deployment
-Roadmap
-License
+---
 
+## Features
 
+**Upload and detection**
+- Drag-and-drop upload for `.csv`, `.xls`, and `.xlsx` files up to 50 MB
+- Automatic column type detection (numeric, categorical, date, or empty)
 
-Features
+**Analysis**
+- Overview dashboard with KPI cards: rows, columns, missing %, duplicates
+- Descriptive statistics: mean, median, std, min/max, quartiles
+- Missing-value analysis with an interactive heatmap
+- Correlation matrix with an interactive heatmap
+- Distribution charts for numeric, categorical, and date columns
+- Outlier detection with boxplots and flagged records
+- Feature importance ranking against a target column you choose
+- AI-generated insights: a natural-language summary of the key patterns in your data
 
+**Action**
+- Data cleaning: fix missing values, remove duplicates, flag outliers
+- Column deep-dive for a focused view of any single column
+- Export a PDF report, cleaned data, or Excel/CSV
+- Light and dark theme
 
-Drag-and-drop dataset upload — supports .csv, .xls, and .xlsx files up to 50 MB
-Automatic column type detection — numeric, categorical, date, or empty
-Overview dashboard — dataset shape, KPI cards (rows, columns, missing %, duplicates)
-Descriptive statistics — mean, median, std, min/max, quartiles for every numeric column
-Missing value analysis — column-wise missing counts with an interactive missing-data heatmap
-Correlation analysis — correlation matrix with an interactive heatmap
-Distribution charts — histograms/bar charts per column (numeric, categorical, and date)
-Outlier detection — boxplots and flagged outlier records
-Feature importance — model-based feature ranking against a user-selected target column
-AI-generated insights — natural-language summary of key patterns, powered by OpenAI
-Data cleaning actions — fix missing values, remove duplicates, flag outliers directly from the dashboard
-Column deep-dive — click into any column for a focused, detailed view
-Export options — download a polished PDF report, export cleaned data, or export to Excel/CSV
-Light/dark theme toggle
-Responsive landing page with feature highlights, tech stack showcase, and "how it works" walkthrough
+---
 
+## What Users Can Do
 
-Tech Stack
+1. **Upload** a dataset by dragging it onto the page.
+2. **Pick a target column** (optional) to see which features matter most for it.
+3. **Explore** the dashboard tabs: Overview, Statistics, Missing Data, Correlation, Charts, Feature Importance, and Report.
+4. **Click any column** to open a detailed view of just that column.
+5. **Read the AI insights** for a quick, written summary of what stands out.
+6. **Clean the data** by handling missing values, duplicates, and outliers without leaving the dashboard.
+7. **Export** a PDF report or the cleaned dataset.
+8. **Switch** between light and dark mode.
 
-Frontend
+---
 
+## Keyboard Shortcuts
 
-React 18 + TypeScript + Vite
-React Router v6 for routing
-shadcn/ui + Radix UI primitives for accessible components
-Tailwind CSS for styling
-Recharts + Chart.js for data visualization
-TanStack React Query for data fetching/caching
-Framer Motion for animations
-PapaParse (CSV) and SheetJS/xlsx (Excel) for client-side parsing
-jsPDF + jspdf-autotable for client-side PDF generation
-Axios for API communication
-Vitest + Testing Library + Playwright for testing
+> **TODO:** Add the shortcuts your app supports, or delete this section if there are none.
+>
+> | Shortcut | Action |
+> |----------|--------|
+> | _e.g. `Esc`_ | _e.g. Close the column drawer_ |
 
+---
 
-Backend
+## The Process
 
+Here's what happens from the moment a file is uploaded to the moment you see results.
 
-Python 3 + FastAPI
-Pandas / NumPy for data processing
-Matplotlib / Seaborn for chart image generation
-scikit-learn for feature importance modeling
-ReportLab for PDF report generation
-OpenAI API for AI-generated insights
-Pytest + httpx for backend testing
+```mermaid
+flowchart LR
+    A["Upload CSV / Excel"] --> B["FastAPI parses the file"]
+    B --> C["Pandas + NumPy analysis"]
+    C --> D["Charts: Matplotlib / Seaborn"]
+    C --> E["Feature importance: scikit-learn"]
+    C --> F["AI insights: OpenAI"]
+    D --> G["Interactive dashboard"]
+    E --> G
+    F --> G
+    G --> H["Clean data, export PDF / Excel / CSV"]
+```
 
+1. **Upload:** the React app sends the file to the backend. The backend parses it and creates a **session** (`session_id`).
+2. **Analyze:** Pandas and NumPy compute statistics, missing values, correlations, and outliers.
+3. **Visualize:** Matplotlib and Seaborn generate chart images, returned to the frontend as base64.
+4. **Model:** scikit-learn ranks feature importance against the chosen target column.
+5. **Narrate:** the OpenAI API turns the findings into a written summary (optional, needs an API key).
+6. **Explore:** the frontend renders everything in the dashboard. Later requests (distribution, outliers, PDF export) reuse the same `session_id` instead of re-uploading.
 
-Architecture
+**Two modes**
+- **Full-stack mode (recommended):** the flow above.
+- **Frontend-only mode:** if no backend is reachable, `src/lib/analyzeData.ts` computes the core statistics directly in the browser, so the dashboard still works on its own.
 
-AutoEDA can run in two modes:
+---
 
+## How I Built It
 
-Full-stack mode (recommended) — The React frontend uploads the dataset to the FastAPI backend, which parses the file, runs the full statistical analysis in Pandas/NumPy, generates chart images with Matplotlib/Seaborn, computes feature importance with scikit-learn, calls the OpenAI API for narrative insights, and returns everything (plus a downloadable PDF) to the frontend for display. Each upload creates a server-side session (session_id) that subsequent requests (missing data, correlation, distribution, outliers, feature importance, insights, PDF export) reference.
-Frontend-only mode — If no backend is reachable, the app falls back to a pure client-side analysis engine (src/lib/analyzeData.ts) that computes the same core statistics directly in the browser using PapaParse/XLSX, so the dashboard still works standalone.
+I split the project into three layers so each part has one job:
 
+- **Frontend (`src/`):** the landing page and dashboard UI. Each dashboard tab is its own component, and `lib/api.ts` is the single place that talks to the backend.
+- **API layer (`backend/routers/eda.py`):** receives requests and passes them to services.
+- **Services (`backend/services/`):** one file per responsibility: parsing, analysis, visualization, feature importance, AI insights, and PDF export. This keeps each piece easy to read, test, and replace.
 
-Browser (React SPA)
-   │
-   ├── /api/*  (Vite dev proxy → http://127.0.0.1:8000)
-   │
-   ▼
-FastAPI Backend
-   ├── routers/eda.py         → upload, summary, missing, correlation, distribution,
-   │                             outliers, feature-importance, insights, export/pdf
-   ├── services/parser.py     → CSV/Excel parsing
-   ├── services/analysis.py   → core statistical analysis
-   ├── services/visualization.py → Matplotlib/Seaborn chart images (base64)
-   ├── services/feature_importance.py → scikit-learn model-based ranking
-   ├── services/insights.py   → OpenAI-powered narrative insights
-   ├── services/export_pdf.py → ReportLab PDF report builder
-   └── store.py                → in-memory session storage
+<details>
+<summary><b>Project structure</b></summary>
 
-Project Structure
-
-insight-navigator/
+```
+autoeda/
 ├── src/
 │   ├── components/
-│   │   ├── dashboard/        # TabOverview, TabStatistics, TabMissing, TabCorrelation,
-│   │   │                     # TabCharts, TabFeatureImportance, TabReport, AIInsights,
-│   │   │                     # DataCleaning, ExportMenu, ColumnDrawer, KPICards
-│   │   ├── landing/          # Navbar, HeroSection, FeaturesSection, HowItWorks,
-│   │   │                     # TechStack, StatsBar, Footer
-│   │   └── ui/                # shadcn/ui component library
-│   ├── pages/                 # Landing, Dashboard, Index, NotFound
+│   │   ├── dashboard/      # Tab components, AIInsights, DataCleaning, ExportMenu, ColumnDrawer, KPICards
+│   │   ├── landing/        # Navbar, Hero, Features, HowItWorks, TechStack, Footer
+│   │   └── ui/             # shadcn/ui components
+│   ├── pages/              # Landing, Dashboard, NotFound
 │   ├── lib/
-│   │   ├── analyzeData.ts     # client-side EDA analysis engine (fallback mode)
-│   │   ├── api.ts              # Axios client for the FastAPI backend
-│   │   ├── generateData.ts     # sample/demo data generator
-│   │   ├── pdfCharts.ts         # chart helpers for client-side PDF export
-│   │   └── theme.tsx            # light/dark theme provider
-│   ├── hooks/                  # use-toast, use-mobile
-│   └── App.tsx                  # app root + routing
+│   │   ├── analyzeData.ts  # client-side analysis engine (fallback mode)
+│   │   ├── api.ts          # Axios client for the backend
+│   │   ├── pdfCharts.ts    # chart helpers for client-side PDF export
+│   │   └── theme.tsx       # light/dark theme provider
+│   └── App.tsx             # app root + routing
 ├── backend/
-│   ├── main.py                  # FastAPI app entrypoint
-│   ├── config.py                 # env config (file size limits, OpenAI settings)
-│   ├── store.py                   # in-memory session store
-│   ├── routers/eda.py              # all API endpoints
+│   ├── main.py             # FastAPI entrypoint
+│   ├── config.py           # env config (file size limit, OpenAI settings)
+│   ├── store.py            # in-memory session store
+│   ├── routers/eda.py      # all API endpoints
 │   ├── services/
-│   │   ├── parser.py                # CSV/Excel parsing
-│   │   ├── analysis.py               # statistics, correlation, missing data, outliers
-│   │   ├── visualization.py           # chart image generation
-│   │   ├── feature_importance.py       # scikit-learn feature ranking
-│   │   ├── insights.py                  # OpenAI-based insight generation
-│   │   └── export_pdf.py                 # PDF report builder
-│   ├── tests/                             # pytest test suite
+│   │   ├── parser.py               # CSV/Excel parsing
+│   │   ├── analysis.py             # statistics, correlation, missing data, outliers
+│   │   ├── visualization.py        # chart image generation
+│   │   ├── feature_importance.py   # scikit-learn ranking
+│   │   ├── insights.py             # OpenAI insight generation
+│   │   └── export_pdf.py           # PDF report builder
+│   ├── tests/              # pytest suite
 │   └── requirements.txt
-├── public/
-├── dist/                          # production build output
-├── vite.config.ts                  # dev server + /api proxy config
-├── tailwind.config.ts
+├── vite.config.ts          # dev server + /api proxy
 └── package.json
+```
 
-Getting Started
+</details>
 
-Prerequisites
+<details>
+<summary><b>API reference</b></summary>
 
+In development, requests to `/api/*` are proxied to the backend at `http://127.0.0.1:8000`.
 
-Node.js 18+ and npm
-Python 3.10+
-An OpenAI API key (optional — only required for AI-generated insights)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/upload` | Upload a file (optional `target_column`). Returns the analysis, charts, AI insights, and a `session_id` |
+| GET | `/summary` | Column stats, categorical breakdown, dtypes, and shape |
+| GET | `/missing` | Missing-value breakdown and heatmap |
+| GET | `/correlation` | Correlation matrix and heatmap |
+| GET | `/distribution/{column}` | Distribution chart for one column |
+| GET | `/outliers` | Outlier records and boxplots |
+| POST | `/feature-importance` | Feature importance for a chosen target column |
+| GET | `/insights` | AI-generated insights for a session |
+| GET | `/export/pdf` | Download the PDF report |
+| GET | `/health` | Backend health check |
 
+</details>
 
-Frontend Setup
+---
 
-bash# Install dependencies
-npm install
+## What I Learned
 
-# Start the development server (http://localhost:5000)
-npm run dev
+> Edit these so they sound like you. These are based on how the project is structured.
 
-The Vite dev server proxies any request to /api/* through to the FastAPI backend at http://127.0.0.1:8000, so make sure the backend is running alongside the frontend for full functionality.
+- **Designing around sessions.** Storing each upload under a `session_id` means the dashboard can request more analysis without re-uploading the file, and it taught me the trade-offs of keeping that state in memory.
+- **Building a graceful fallback.** Writing a second, client-side analysis engine showed me how to make an app degrade instead of break when a service is down.
+- **Keeping optional features optional.** The app works fully without an OpenAI key. AI insights are an add-on, not a dependency.
+- **Protecting secrets.** The API key lives only in the backend `.env` file, never in the frontend.
+- **Separating concerns.** Splitting the backend into small services made it much easier to test each part on its own.
 
-Backend Setup
+---
 
-bashcd backend
+## How It Could Be Improved
 
-# Create and activate a virtual environment (recommended)
+- Persistent session storage (sessions are currently in memory, so they reset when the server restarts)
+- User accounts and saved report history
+- More file formats (JSON, Parquet)
+- Multi-dataset comparison
+- A Docker setup for one-command startup
+
+---
+
+## How to Run
+
+**Prerequisites**
+- Node.js 18+ and npm
+- Python 3.10+
+- An OpenAI API key (optional, only needed for AI insights)
+
+**1. Clone the repository**
+
+```bash
+git clone https://github.com/YOUR_USERNAME/autoeda.git
+cd autoeda
+```
+
+**2. Start the backend**
+
+```bash
+cd backend
+
+# Create and activate a virtual environment
 python -m venv venv
-source venv/bin/activate        # on Windows: venv\Scripts\activate
+source venv/bin/activate        # Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Copy environment template and add your OpenAI key
-cp .env.example .env
+# Add your settings
+cp .env.example .env            # then add your OPENAI_API_KEY
 
-# Run the API server (http://127.0.0.1:8000)
+# Run the API at http://127.0.0.1:8000
 python main.py
+```
 
-The backend also exposes a health check at GET /health.
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `OPENAI_API_KEY` | Key used to generate AI insights | _(empty)_ |
+| `OPENAI_MODEL` | Model used for insights | `gpt-4o-mini` |
 
-Environment Variables
+**3. Start the frontend** (in a new terminal, from the project root)
 
-Create a backend/.env file (see backend/.env.example):
+```bash
+npm install
+npm run dev                     # http://localhost:5000
+```
 
-VariableDescriptionDefaultOPENAI_API_KEYAPI key used to generate AI insights(empty)OPENAI_MODELOpenAI model used for insight generationgpt-4o-mini
+**4. Open the app** at `http://localhost:5000` and upload a dataset.
 
-Optionally, set VITE_API_URL in the frontend environment to point to a non-default backend URL (defaults to /api, proxied to http://127.0.0.1:8000).
+**Useful commands**
 
-API Reference
+| Command | Description |
+|---------|-------------|
+| `npm run build` | Production build (output in `dist/`) |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | Run ESLint |
+| `npm run test` | Run frontend tests |
+| `pytest` (from `backend/`) | Run backend tests |
 
-All endpoints are served under the FastAPI app (proxied via /api in development).
+**Deploying:** the frontend builds to a static site (Vercel, Netlify, GitHub Pages) and the backend runs on any ASGI host (Render, Railway, Fly.io). When hosting them separately, set `VITE_API_URL` on the frontend to the backend's public URL and update the CORS settings in `backend/main.py`.
 
-MethodEndpointDescriptionPOST/uploadUpload a CSV/Excel file, optionally with a target_column; returns full analysis, chart images, AI insights, and a session_idGET/summaryColumn stats, categorical breakdown, dtypes, and shape for a sessionGET/missingMissing-value breakdown and heatmap imageGET/correlationCorrelation matrix and heatmap imageGET/distribution/{column}Distribution chart for a specific columnGET/outliersOutlier records and boxplot imagesPOST/feature-importanceCompute feature importance against a chosen target columnGET/insightsRetrieve the AI-generated narrative insights for a sessionGET/export/pdfDownload a formatted PDF EDA report for a sessionGET/healthBackend health check
+---
 
-Available Scripts
+## Demo Video
 
-CommandDescriptionnpm run devStart the Vite development servernpm run buildProduction build (output in dist/)npm run build:devDevelopment-mode buildnpm run previewPreview the production build locallynpm run lintRun ESLintnpm run testRun the Vitest test suitenpm run test:watchRun Vitest in watch mode
+[![Watch the demo](YOUR_THUMBNAIL_IMAGE_URL)](YOUR_VIDEO_URL)
 
-Backend tests (from the backend/ directory):
-
-bashpytest
-
-Testing
-
-
-Frontend: Vitest + React Testing Library for unit/component tests; Playwright config included for end-to-end testing.
-Backend: Pytest with httpx-based API tests covering the analysis pipeline and endpoints (backend/tests/).
-
-
-Deployment
-
-The frontend builds to a static site (npm run build → dist/) and can be hosted on any static host (Vercel, Netlify, GitHub Pages, etc.). The backend is a standard FastAPI app and can be deployed on any ASGI-compatible host (Render, Railway, Fly.io, a VPS with uvicorn/gunicorn, etc.). When deploying separately, set VITE_API_URL on the frontend to the backend's public URL and update CORS settings in backend/main.py accordingly.
-
-Roadmap
-
-
-Persistent storage for sessions (currently in-memory)
-User authentication and saved report history
-Support for additional file formats (JSON, Parquet)
-Multi-file / multi-dataset comparison
+_A short walkthrough of uploading a dataset and exploring the dashboard._
